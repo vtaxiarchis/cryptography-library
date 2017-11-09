@@ -1,0 +1,60 @@
+Vaios Taxiarchis - Home assignment 1, Cryptography course
+
+Q1:
+The probability, that such a random block (uniform distribution over all 64 bit blocks) is a pad block of type 0 (1st form), is:
+((2^8)^7)/((2^8)^8) = 1/(2^8) = 1/256. <?,?,?,?,?,?,?,0000000> one byte of the 8 bytes (each byte has 8 bits).
+
+Q2:
+The probability that a random block is a valid pad block (all of the forms) is the sum of all probabilities.
+1st: 1/(2^8)
+2nd: 1/(2^16)
+3rd: 1/(2^24)
+4th: 1/(2^32)
+5th: 1/(2^40)
+6th: 1/(2^48)
+7th: 1/(2^56)
+8th: 1/(2^64)
+Sum = 1st + 2nd + ... + 8th = 1/(2^8) + 1/(2^16) + ... + 1/(2^64) = 0.0039
+
+Q3:
+Given two events A and B from the sigma-field of a probability space with P(B) > 0, the conditional probability of A (a random block of type 0) given
+B (a valid block) is defined as the quotient of the probability of the joint of events A and B, and the probability of B: P(A|B)=P(A and B)/P(B)
+So, P(A and B)=P(A)=1/(2^8) and P(B)=Sum. P(A|B) = P(A and B)/P(B) = P(A)/Sum=... = 0.996 = 99.6%
+
+Q4:
+Server first decrypts the message received (C') using the shared secret key (function E) to obtain corresponding plain text (C). Note that all plain text
+produced will be different from those which originally sent, because they are modified all but the last cipher text block. The tag for the new message, t,
+is given by: t = E (Pn (+) E(Pn-1 (+) E(... (+)P1))) => t = E(P (+) C') => t = C.
+
+In a same way like we mentioned above, we obtain: D(C) = P (+) C' => D(C) (+) (Ri (+) C') = P (+) Ri.
+
+Q5:
+If padding is correct, we assume that the block is a pad block of type 0, so the last byte o P is equal to i.
+
+Q6:
+We obtain:
+for the 1st: Ci−1 = Px (+) D(Ci)
+for the 2nd: Ci−2 = Pi-1 (+) D(Ci-1) a combination of the above.
+for the 3rd: ...
+
+MAC = ( S , V )
+- S takes as input a key k and a message m and outputs a tag t = S(k, m)
+- V checks if it is a valid tag for m under the key k. If so, the verification outputs "yes", otherwise it outputs "no"
+- Consistency requirement for MAC: for every k in K, for every m in M we obtain V ( k, m, S(k, m) ) = yes
+
+Assume that the new message m' that we send is bigger than the message m. So the new tag will be t' = S (k, m') and the new
+Consistency requirement for MAC will be V (k, m', S(k, m')) = yes, or every k in K, for every m' in M
+
+Thus, the MAC computation described before shows that if we increase the message length, it will slow down the MAC computation.
+
+Q7:
+If padding is correct, the two last bytes of the padding should be equal to "00000001", because the padding is < r1, r2, r3, r4, r5, r6, 1, 1 >.
+Therefore, b7 (+) i = 00000001
+
+Q8:
+The form of messages used to discover b6: Si = < r1, r2, r3, r4, r5, i, b7 (+) 2, b8 (+) 2 >, where the message sent is equal to (Si (+) C′) || C.
+The server first decrypts the message, the last block (the pad block) will then be decrypted to be D(C) (+) (Ri (+) C′), which turns out to be P (+) Ri.
+In order to discover b6 it will use D(C) (+) (Si (+) C′), which turns out to be P (+) Si.
+
+Q9:
+Here it comes the issue learned in lecture 4 with the vector IV.

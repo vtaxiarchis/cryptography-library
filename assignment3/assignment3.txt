@@ -1,0 +1,189 @@
+-----------------------------------------------------------------------
+Vaios Taxiarchis (910309-8514) - Home assignment 3, Cryptography course
+-----------------------------------------------------------------------
+
+PART A:
+
+--------------------------------------------------------------------------------------
+
+QUESTION 0:
+
+Y1Y2Y3Y4M1M2D1D2 = 19910309
+
+
+QUESTION 1:
+
+m1(x) = v1 − Y1x + M1(x^2) =>
+m2(x) = v2 − Y2x + M2(x^2) => 
+m3(x) = v3 − Y3x + D1(x^2) => 
+m4(x) = v4 − Y4x + D2(x^2) => 
+
+m1(x) = v1 - x
+m2(x) = v2 - 9x + 3(x^2)
+m3(x) = v3 - 9x
+m4(x) = v4 - x + 9(x^2) 
+
+mi sends to Aj the share mi(j), so we obtain the emails sent by each:
+
+m1(1) = v1 - 1 		, m1(2) = v1 - 2 	, m1(3) = v1 - 3	=>
+m2(1) = v2 - 9*1 + 3*1	, m2(2) = v2 - 9*2 + 3*4, m2(3) = v2 - 9*3 + 3*9=>
+m3(1) = v3 - 9*1	, m3(2) = v3 - 9*2	, m3(3) = v3 - 9*3	=>
+m4(1) = v4 - 1 + 9*1 	, m4(2) = v4 - 2 + 9*4	, m4(3) = v4 - 3 + 9*9	=>
+
+m1(1) = v1 - 1 	, m1(2) = v1 - 2  , m1(3) = v1 - 3
+m2(1) = v2 - 6	, m2(2) = v2 - 6  , m2(3) = v2
+m3(1) = v3 - 9	, m3(2) = v3 - 18 , m3(3) = v3 - 27
+m4(1) = v4 + 8 	, m4(2) = v4 + 34 , m4(3) = v4 + 78
+
+for v1 = 1, v2 = 1 , v3 = - 1 and v4 = 1 we obtain: 
+
+m1(1) = 0 	, m1(2) = -1  	, m1(3) = -2
+m2(1) = -5	, m2(2) = -5  	, m2(3) = 1
+m3(1) = -10	, m3(2) = -19 	, m3(3) = -28
+m4(1) = 9 	, m4(2) = 35 	, m4(3) = 79
+
+
+QUESTION 2:
+
+Auditor Aj, j in {1,2,3}
+
+Each Aj=M(j) uses a SMPC box to compute the output: 
+
+M(0) = a1*d1(0) + a2*d2(0) + a3*d3(0) + a4*d4(0) =>
+
+M(0) = (m1, m2, m3, m4)*d1(0) + (m1, m2, m3, m4)*d2(0) 
+	+ (m1, m2, m3, m4)*d3(0) + (m1, m2, m3, m4)*d4(0) =>
+
+Using the Lagrange interpolation formula and 
+construction (Shamir SSS) (from Lecture 9):
+
+di(x) = Product(for j=1 to j=t+1 and j!=i) (x-j)/(i-j)
+di(x) only depends on i, j in {1,2,...,n} and not on the polynomial a(x) since x=0
+
+M(0)  = a(1)d1 (0) + a(2)d2 (0) + . . . + a(t + 1)d(t+1) (0)
+
+So, M(0) = (m1, m2, m3, m4)(0) = v1 + v2 + v3 + v4
+
+A_1 broadcasts: 0 + (-5) + (-10) + 9 = -6
+A_2 broadcasts: (-1) + (-5) + (-19) + 35 = 10
+A_3 broadcasts: (-2) + 1 + (-28) + 79 = 50
+
+
+QUESTION 3:
+
+Each society member can compute the final result: 
+
+if ( h(x) < 0 ) => Go to the concert
+if ( h(x) > 0 ) => Go to Liseberg
+if ( h(x) ==0 ) => Stay home
+
+The society members can use the values aj sent by 
+the auditors to compute the sum of their votes.
+
+h(x) = a1*d1(x) + a2*d2(x) + a3*d3(x) =>
+
+h(0) = a1*d1(0) + a2*d2(0) + a3*d3(0)
+
+In order to find h(0), we calculate d1(0), d2(0) and d3(0) 
+using the equation for the product from lecture 9:
+
+d1(0) = (2/(2-1))*(3/(3-1)) = 3
+d2(0) = (1/(1-2))*(3/(3-2)) = -3
+d3(0) = (1/(1-3))*(2/(2-3)) = 1
+
+So, h(0) = 3*a1 + (-3)*a2 + a3 =>
+    h(0) = 3*(-6) + (-3)*10 + 50 =>
+    h(0) = 2 > 0
+
+and it appears to be h(0) = v1 + v2 + v3 + v4 = 2
+
+Now each society member can see that the sum is positive, so they will go to Liseberg.
+
+
+QUESTION 4:
+
+The problem is that any society member can modify its own vote and then send it to the auditors. So, for example m1 can change its own message and send v1=5 while the others
+send v2=v3=v4=-1. The final result will be 2, but the the majority of society members decided to go to concert and the result says they all have to go to Liseberg.
+
+
+QUESTION 5;
+
+A potential way to prevent m1 from cheating is a function in every auditor that can 
+calculate the vi and if vi does not exist in {-1,1} then reject the vote, or put
+another vote instead (close to -1 or close to 1 depending on what vi received)
+
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------
+
+PART B:
+
+--------------------------------------------------------------------------------------
+
+TASK 1:
+
+Q1A:
+
+Assume that C picks up message 2 in a protocol run, so the message {M}eA from B to A
+In order to find M, we have to contact A using the protocol given.
+
+According to the protocol we send {M}eA to A, thus we obtain:
+
+1. C -> A:  { C, {M}eA }eA
+
+2. A -> C:  { M }eC
+
+Finally, C recovered M using the protocol!
+
+
+Q1B:
+
+Assume now that C instead picks up message 1
+So, the sent message is M’ = { A , {M}eB }eB
+
+According to the protocol we send M’ to B, thus we obtain:
+
+1. C -> B:  { C, M’ }eB => 
+   C -> B:  { C, { A , {M}eB }eB }eB
+
+2. B -> C:  { A, {M}eB }eC
+
+If we look at the previous communication we obtain {A, {M}eB }eC = {M}eB
+Interestingly, we obtain {M}eA = {M}eB, so we write again the protocol:
+
+1. C -> B:  { C, {M’}eA }eB
+
+2. B -> C:  { {M}eA }eC
+
+Finally, C recovered M using the protocol!
+
+--------------------------------------------------------------------------------------
+
+TASK 2:
+
+Q2:
+
+In this task the attack is a form of adversary-in-the-middle attack
+
+A initiates a session of the protocol with adversary C, who, in addition to his secret
+adversarial nature, is a legitimate user in the system.
+
+1. A -> C: { A, nA }eC 
+2. C -> A: { nA, nB }eA 
+3. A -> C: { nB }eC
+
+C now takes the opportunity and initiates a parallel run of the protocol with B, 
+where he pretends to be A. According to the protocol we send nC to B, thus we obtain:
+
+1. C -> B:  { A, nA }eB
+2. B -> C:  { nA, nB }eA
+3. C -> B:  { nB }eB
+
+In order to achieve our goal we have to run these two protocols simultaneously and 
+each one one can communicate to the other two.
+
+The final result is that A and C have achieved mutual authentication, and that B and C 
+have a connection where B believes that he is talking to A.
+
+--------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------

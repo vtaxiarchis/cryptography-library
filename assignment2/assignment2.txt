@@ -1,0 +1,184 @@
+-----------------------------------------------------------------------
+Vaios Taxiarchis (910309-8514) - Home assignment 2, Cryptography course
+-----------------------------------------------------------------------
+$ ~brunetta/cryptoAss2 9103098514
+-----------------------------------------------------------------------
+Home assignment 2, cryptography.
+Data for 9103098514.
+Your generator is g=13.
+For task 2, the receiver's public key is X=6 and the message is m=15.
+For task 3, your private key is x=9 and the ciphertext is (16,14)(18,16)(2,1).
+-----------------------------------------------------------------------
+-----------------------------------------------------------------------
+
+TASK 1A:
+
+We can calculate g exists in Z23* with the formula: gi = g^i mod 23
+For convenience we can use: g^(i+1) = g^i * g.
+
+| Table |
+i   :   0   1   2   3   4   5   6   7   8   9   10   11   12   13 ... 21
+gi  :   1   13  8   12  18  4   6   9   2   3   16   1    13   8  ...
+
+After the 11nth gi (i=10), we can see that the sequence of numbers repeats.
+So, we can use the gi for i=0,...,10, as we expected.
+
+
+TASK 1B:
+
+We obtain that q > 0, where g exists in Zp* and g^q = 1,
+thus the set S = { g^i | 0 <= i < q }
+
+Now we have to show that if a and b exists in S,
+then the multiplication a*b also exists in S.
+
+Proof:
+a = g^x , where x exists in Z
+b = g^y , where y exists in Z
+
+a * b = g^x * g^y =>
+      = g^(x+y) =>
+      = g^(((x+y) mod q) + k*q ) =>
+      = g^((x+y) mod q) * g^(k*q) =>
+      = g^((x+y) mod q) * (g^q)^k =>
+      = g^((x+y) mod q) * 1 =>
+      = g^((x+y) mod q)
+
+We have 0 < = ((x+y) mod q) < q. Then by definition g^((x+y) mod q) is in S.
+
+-----------------------------------------------------------------------
+
+TASK 2A:
+
+Using the table <i, gi> from TASK 1A we obtain:
+
+g^x mod 23 = X (1)
+g^6 mod 23 = 6 (2)
+
+(1)(2)=> x = 6
+
+
+TASK 2B:
+
+Encryption: Pick a random value y in Z23*, and compute Y = g^y mod p. Y = 9 
+
+To encrypt the message m=15 using the encryption key k we obtain:
+
+For y = 7 we obtain: k = X^y = (6^7) mod 23 = 3
+
+and c = ( k * m ) mod 23 = ( 3 * 15 ) mod 23 = 30 mod 23 = 22
+
+Thus, the final ciphertext is C = (9,22)
+
+
+TASK 2C:
+
+Decryption: Parse the ciphertext as C = (Y,c) = (9,22) => Y = 9, c = 22
+
+Using the table <i, gi> from TASK 1A we obtain:
+
+Y = g^y mod p = (g^7) mod 23 = (13^7) mod 23 = 9
+
+And, now we compute the shared secret key k = Y^x mod p:
+
+k = Y^x mod 23 =>
+  = 9^6 mod 23 =>
+  = 3
+
+Thus, we retrieve the plaintext by computing m = c * k^(-1) mod p
+
+    m = c * k^(-1) mod 23 =>
+      = 22 * (3)^(-1) mod 23 =>
+
+    - Compute the modular inverse of k in Z23*
+    In order to calculate this, we need to find a number that z*3 = 1.
+    For Z23* that number is 12, because (3*8) mod 23 = 1
+
+      = 22 * 8 mod 23 =>
+      = 176 mod 23 =>
+      = 15
+
+-----------------------------------------------------------------------
+
+TASK 3A:
+
+Using the table <i, gi> from TASK 1A we obtain:
+
+For x = 9 we can compute the public key X = (g^x) mod 23 = 3
+
+
+TASK 3B:
+
+For this task the ciphertext is (16,14)(18,16)(2,1)
+So, we assume pattern matching on (Y, C) and x = 9
+
+-For (16,14) we obtain:
+
+Y = 16
+C = 14
+
+So, k = Y^x mod 23 = 16^9 mod 23 = 8
+
+and m = C * k^(-1) mod 23
+      = 14 * (8)^(-1) mod 23	(!!!) Explained below
+      = 14 * 3 mod 23
+      = 42 mod 23
+      = 19
+
+So m = 19 and letter = 'S'
+
+(!!!) 	In order to calculate this, we need to find a number that z*8 = 1.
+(!!!) 	For Z23* that number is 3, because (3*8) mod 23 = 1.
+(!!!) 	------------------------------------------------------------------
+(!!!) 	We can find the modular multiplicative inverse x of a mod b:
+(!!!) 	   x = a^(-1) mod b =>
+(!!!) 	   ax = 1 mod b =>
+(!!!) 	Then working on Z11, we can find one value of x that satisfies this 
+(!!!) 	congruence and we write:
+(!!!) 	   a*(value) = 1 mod b
+(!!!) 	There are no other values of x in Z11 hat satisfy this congruence:
+(!!!) 	   e.g. 3*4 = 1 mod 11 
+(!!!) 	Therefore, the modular multiplicative inverse of 3 mod 11 is 4.
+(!!!) 	The modular multiplicative inverse of a modulo m can be found with the 
+(!!!)   extended Euclidean algorithm. The algorithm finds solutions to Bezouts identity:
+(!!!) 	   ax + by = gcd(a, b)
+(!!!) 	by the definition of congruence, m | ax − 1, which means that m is a 
+(!!!) 	divisor of ax − 1. This, in turn, means that:
+(!!!) 	   ax - 1 = qm
+(!!!) 	Rearranging produces:
+(!!!) 	   ax - qm = 1.
+(!!!) 	As an alternative to the extended Euclidean algorithm, we can use Euler's theorem 
+
+
+-For (18,16) we obtain:
+
+Y = 18
+C = 16
+
+So, k = Y^x mod 23 = 18^9 mod 23 = 12
+
+and m = C * k^(-1) mod 23
+      = 16 * (12)^(-1) mod 23
+      = 16 * 2 mod 23
+      = 32 mod 23
+      = 9
+
+So m = 9 and letter = 'I'
+
+
+-For (2,1) we obtain:
+
+Y = 2
+C = 1
+
+So, k = Y^x mod 23 = 2^9 mod 23 = 6
+
+and m = C * k^(-1) mod 23
+      = 1 * (6)^(-1) mod 23
+      = 1 * 4 mod 23
+      = 4 mod 23
+      = 4
+
+So m = 4 and letter = 'D'
+
+Thus, the decrypted message is 'SID'
