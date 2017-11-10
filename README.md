@@ -34,7 +34,7 @@ Compilation/Running:
 
 -----------------------------------------------------------------
 
-### Assignment 2 --- fiat_shamir_java ###
+### fiat_shamir_java ###
 
 We eavesdropped on a number of Fiat-Shamir protocol runs and we found that the same nonce was used twice. Due to the special soundness property we should now be able to retrieve the secret key used in the protocol. The fiat_shamir_java folder contains the skeleton code and the test suite.
 
